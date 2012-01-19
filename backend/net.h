@@ -43,9 +43,6 @@
 #ifndef net_h
 #define net_h
 
-#include <sys/types.h>
-#include <sys/socket.h>
-
 #include "../include/sane/sanei_wire.h"
 #include "../include/sane/config.h"
 
