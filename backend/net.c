@@ -2209,7 +2209,7 @@ sane_read (SANE_Handle handle, SANE_Byte * data, SANE_Int max_length,
 	  DBG (2, "sane_read: received error signal\n");
 
 	  /* turn off non-blocking I/O (s->data will be closed anyhow): */
-	  fcntl (s->data, F_SETFL, 0);
+	  sane_set_io_mode (s, SANE_FALSE);
 
 	  /* read the status byte: */
 	  if (read (s->data, &ch, sizeof (ch)) != 1)
