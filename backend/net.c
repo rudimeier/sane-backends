@@ -2363,7 +2363,12 @@ sane_set_io_mode (SANE_Handle handle, SANE_Bool non_blocking)
       return SANE_STATUS_INVAL;
     }
 
+#if ! defined _WIN32
   if (fcntl (s->data, F_SETFL, non_blocking ? O_NONBLOCK : 0) < 0)
+#else
+  u_long iMode = non_blocking;
+  if (ioctlsocket(s->data, FIONBIO, &iMode) != NO_ERROR)
+#endif
     {
       DBG (1, "sane_set_io_mode: fcntl failed (%s)\n", strerror (errno));
       return SANE_STATUS_IO_ERROR;
