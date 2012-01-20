@@ -158,6 +158,17 @@ static int hang_over;
 */
 static int left_over;
 
+static ssize_t
+net_write (int fd, const void *buf, size_t count)
+{
+	return send( fd, buf, count, 0 );
+}
+
+static ssize_t
+net_read (int fd, void *buf, size_t count)
+{
+	return recv( fd, buf, count, 0 );
+}
 
 #ifdef NET_USES_AF_INDEP
 static SANE_Status
@@ -493,8 +504,8 @@ connect_dev (Net_Device * dev)
   DBG (2, "connect_dev: sanei_w_init\n");
   sanei_w_init (&dev->wire, sanei_codec_bin_init);
   dev->wire.io.fd = dev->ctl;
-  dev->wire.io.read = read;
-  dev->wire.io.write = write;
+  dev->wire.io.read = net_read;
+  dev->wire.io.write = net_write;
 
   /* exchange version codes with the server: */
   req.version_code = SANE_VERSION_CODE (V_MAJOR, V_MINOR,
