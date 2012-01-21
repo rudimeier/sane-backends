@@ -64,9 +64,21 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h> /* OS/2 needs this _after_ <netinet/in.h>, grrr... */
+#if ! defined _WIN32
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <netdb.h> /* OS/2 needs this _after_ <netinet/in.h>, grrr... */
+#else
+# ifdef NEED_WINVER_XP
+#  define WINVER 0x0501
+# endif
+# ifdef HAVE_WINSOCK2_H
+#  include <winsock2.h>
+# endif
+# ifdef HAVE_WS2TCPIP_H
+#  include <ws2tcpip.h>
+# endif
+#endif
 
 #ifdef WITH_AVAHI
 # include <avahi-client/client.h>
