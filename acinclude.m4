@@ -697,8 +697,9 @@ for be in ${BACKENDS}; do
     ;;
 
     net)
-    if test "${ac_cv_header_sys_socket_h}" = "no"; then
-      echo "*** $be backend requires sys/socket.h - $DISABLE_MSG"
+    if test "${ac_cv_header_sys_socket_h}" != "yes" \
+      && test "${ac_cv_header_winsock2_h}" != "yes"; then
+      echo "*** $be backend requires sys/socket.h or winsock2.h - $DISABLE_MSG"
       backend_supported="no"
     fi
     ;;
