@@ -1016,6 +1016,18 @@ sane_init (SANE_Int * version_code, SANE_Auth_Callback authorize)
       DBG (3, "sane_init: Client has little endian byte order\n");
     }
 
+#ifdef _WIN32
+    {
+      /* no much fun on win32 without WSAStartup but is this the right place? */
+      WSADATA data;
+      int wsa_err = WSAStartup( MAKEWORD(2, 2), &data) != 0;
+      if ( wsa_err != 0 )
+	{
+	  DBG (1, "sane_init: WSAStartup failed with error %d\n", wsa_err );
+	}
+    }
+#endif
+
 #ifndef NET_USES_AF_INDEP
   DBG (2, "sane_init: determining sane service port\n");
   serv = getservbyname ("sane-port", "tcp");
@@ -1196,6 +1208,9 @@ sane_exit (void)
 	}
       free (devlist);
     }
+#ifdef _WIN32
+  WSACleanup();
+#endif
   DBG (3, "sane_exit: finished.\n");
 }
 
