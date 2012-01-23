@@ -1,4 +1,7 @@
 2012-01-26 Ruediger Meier <sweet_f_a@gmx.de>
+	* acinclude.m4, backend/net.c, backend/net.h: port net backend to win32
+
+2012-01-26 Ruediger Meier <sweet_f_a@gmx.de>
 	* acinclude.m4: SANE_CHECK_IPV6 more portable
 	* acinclude.m4, configure.in: portable check for netdb.h functions
 	* acinclude.m4, configure.in, sanei/sanei_udp.c: checking for socklen_t
