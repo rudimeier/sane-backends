@@ -1,3 +1,7 @@
+2012-01-26 Ruediger Meier <sweet_f_a@gmx.de>
+	* acinclude.m4, configure.in, sanei/sanei_udp.c: checking for socklen_t
+	more safe
+
 2012-01-23 Rolf Bensch <rolf at bensch hyphen online dot de>
 	* backend/pixma_mp150, doc/descriptions/pixma.desc, doc/sane-pixma.man:
 	New scanner PIXMA MX880 Series.

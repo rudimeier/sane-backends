@@ -8059,12 +8059,13 @@ done
   fi
 
 
-for ac_header in winsock2.h
+for ac_header in winsock2.h ws2tcpip.h
 do :
-  ac_fn_c_check_header_mongrel "$LINENO" "winsock2.h" "ac_cv_header_winsock2_h" "$ac_includes_default"
-if test "x$ac_cv_header_winsock2_h" = xyes; then :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_WINSOCK2_H 1
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
  SOCKET_LIB="-lws2_32"
 fi
@@ -8257,31 +8258,26 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_long_long" >&5
 $as_echo "$have_long_long" >&6; }
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socklen_t in <sys/socket.h>" >&5
-$as_echo_n "checking for socklen_t in <sys/socket.h>... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
+ac_fn_c_check_type "$LINENO" "socklen_t" "ac_cv_type_socklen_t" "$ac_includes_default
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
+#endif
+#ifdef HAVE_WS2TCPIP_H
+# include <ws2tcpip.h>
+#endif
+"
+if test "x$ac_cv_type_socklen_t" = xyes; then :
 
-#include <sys/socket.h>
-
-int
-main ()
-{
-socklen_t len
-  ;
-  return 0;
-}
+cat >>confdefs.h <<_ACEOF
+#define HAVE_SOCKLEN_T 1
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; };
-$as_echo "#define socklen_t int" >>confdefs.h
+
 
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for union semun in <sys/sem.h>" >&5
 $as_echo_n "checking for union semun in <sys/sem.h>... " >&6; }

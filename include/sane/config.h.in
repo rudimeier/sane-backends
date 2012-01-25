@@ -282,6 +282,9 @@
 /* Define to 1 if you have the `snprintf' function. */
 #undef HAVE_SNPRINTF
 
+/* Define to 1 if the system has the type `socklen_t'. */
+#undef HAVE_SOCKLEN_T
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -441,6 +444,9 @@
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
 
+/* Define to 1 if you have the <ws2tcpip.h> header file. */
+#undef HAVE_WS2TCPIP_H
+
 /* Define to 1 if you have the `_portaccess' function. */
 #undef HAVE__PORTACCESS
 
@@ -584,9 +590,6 @@
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
 
-/* Define socklen_t as \'int\' if necessary. */
-#undef socklen_t
-
 /* Define to `long' if <sys/types.h> does not define. */
 #undef ssize_t
 
@@ -602,6 +605,9 @@
 #define _BSDTYPES_DEFINED
 #endif
 
+#ifndef HAVE_SOCKLEN_T
+#define socklen_t int
+#endif
 #ifndef HAVE_U_CHAR
 #define u_char unsigned char
 #endif

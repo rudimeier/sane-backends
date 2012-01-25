@@ -669,6 +669,9 @@ AH_BOTTOM([
 #define _BSDTYPES_DEFINED
 #endif
 
+#ifndef HAVE_SOCKLEN_T
+#define socklen_t int
+#endif
 #ifndef HAVE_U_CHAR
 #define u_char unsigned char
 #endif

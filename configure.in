@@ -204,7 +204,7 @@ AC_CHECK_HEADERS([asm/io.h],,,[#include <sys/types.h>])
 
 SANE_CHECK_MISSING_HEADERS
 
-AC_CHECK_HEADERS(winsock2.h, SOCKET_LIB="-lws2_32")
+AC_CHECK_HEADERS([winsock2.h ws2tcpip.h], SOCKET_LIB="-lws2_32")
 
 AC_CHECK_HEADER(resmgr.h,[
 	AC_CHECK_LIB(
@@ -232,12 +232,17 @@ have_long_long=no
 AC_TRY_COMPILE([], [long long x; x = (long long)0;], AC_DEFINE(HAVE_LONG_LONG, 1, [Define if the long long type is available.]) have_long_long=yes)
 AC_MSG_RESULT($have_long_long)
 
-AC_MSG_CHECKING([for socklen_t in <sys/socket.h>])
-AC_TRY_COMPILE([
-#include <sys/socket.h>
-],[socklen_t len],AC_MSG_RESULT(yes),
-[AC_MSG_RESULT(no); AC_DEFINE(socklen_t,int,
-[Define socklen_t as \'int\' if necessary.])])
+AC_CHECK_TYPES([socklen_t], [], [],
+[[$ac_includes_default
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
+#endif
+#ifdef HAVE_WS2TCPIP_H
+# include <ws2tcpip.h>
+#endif]])
 
 AC_MSG_CHECKING([for union semun in <sys/sem.h>])
 AC_TRY_COMPILE([
