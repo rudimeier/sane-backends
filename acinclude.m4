@@ -13,6 +13,7 @@ dnl   JAPHAR_GREP_CFLAGS(flag, cmd_if_missing, cmd_if_present)
 dnl   SANE_LINKER_RPATH
 dnl   SANE_CHECK_U_TYPES
 dnl   SANE_CHECK_GPHOTO2
+dnl   SANE_CHECK_NETDB_FUNC
 dnl   SANE_CHECK_IPV6
 dnl   SANE_CHECK_BACKENDS
 dnl   SANE_PROTOTYPES
@@ -483,6 +484,62 @@ AC_DEFUN([SANE_CHECK_GPHOTO2],
   AC_SUBST(GPHOTO2_CPPFLAGS)
   AC_SUBST(GPHOTO2_LIBS)
   AC_SUBST(GPHOTO2_LDFLAGS)
+])
+
+#
+# Checks for functions which usually come from netdb.h or ws2tcpip.h (e.g.
+# getaddrinfo). Header checks have to be done before as well as adding the right
+# libs.
+AC_DEFUN([SANE_CHECK_NETDB_FUNC],
+[
+  sane_netdb_includes="$ac_includes_default
+  #ifdef HAVE_SYS_SOCKET_H
+  # include <sys/socket.h>
+  #endif
+  #ifdef HAVE_NETDB_H
+  # include <netdb.h>
+  #endif
+  #ifdef HAVE_WINSOCK2_H
+  # include <winsock2.h>
+  #endif
+  #ifdef HAVE_WS2TCPIP_H
+  # include <ws2tcpip.h>
+  #endif"
+
+  do_winver_test="no"
+
+  AC_CACHE_CHECK([for $1],[ac_cv_func_$1],
+    [AC_COMPILE_IFELSE(
+      [AC_LANG_PROGRAM(
+        [$sane_netdb_includes],
+        [int testme(){ $1; }])],
+      [ac_cv_func_$1="yes"],
+      [ac_cv_func_$1="no"
+      do_winver_test="yes"])])
+
+  dnl Under mingw, we may need to set WINVER to 0x0501 to expose the function.
+  if test "$do_winver_test" = "yes"; then
+    AC_MSG_CHECKING([for win32 ]$1[ if WINVER is 0x0501])
+    AC_COMPILE_IFELSE(
+      [AC_LANG_PROGRAM(
+        [#define WINVER 0x0501
+        $sane_netdb_includes],
+        [int testme(){ $1; }])],
+      [AC_MSG_RESULT(yes)
+      ac_cv_func_$1="yes"
+      AC_DEFINE([NEED_WINVER_XP], [1],
+        [Define to 1 if some win32 functions needs WINVER set.])],
+      [AC_MSG_RESULT(no)
+      ac_cv_func_$1="no"])
+  fi
+
+  if test "$ac_cv_func_$1" = "yes"; then
+    AC_DEFINE([HAVE_]translit($1, [a-z], [A-Z]), [1],
+      [Define to 1 if you have the `]$1[' function.])
+  fi
+
+  unset do_winver_test
+  unset sane_netdb_includes
 ])
 
 #

@@ -8009,7 +8009,7 @@ for ac_header in fcntl.h unistd.h libc.h sys/dsreq.h sys/select.h \
     sys/socket.h sys/io.h sys/hw.h sys/types.h linux/ppdev.h \
     dev/ppbus/ppi.h machine/cpufunc.h sys/bitypes.h sys/sem.h sys/poll.h \
     windows.h be/kernel/OS.h limits.h sys/ioctl.h asm/types.h\
-    netinet/in.h tiffio.h ifaddrs.h pwd.h getopt.h
+    netinet/in.h tiffio.h ifaddrs.h pwd.h getopt.h netdb.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -9334,7 +9334,7 @@ rm -f conftest.mmap conftest.txt
 for ac_func in atexit ioperm i386_set_ioperm \
     mkdir strftime strstr strtod  \
     cfmakeraw tcsendbreak strcasecmp strncasecmp _portaccess \
-    getaddrinfo getnameinfo poll setitimer iopl getuid getpass
+    poll setitimer iopl getuid getpass
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -9345,6 +9345,174 @@ _ACEOF
 
 fi
 done
+
+
+
+  sane_netdb_includes="$ac_includes_default
+  #ifdef HAVE_SYS_SOCKET_H
+  # include <sys/socket.h>
+  #endif
+  #ifdef HAVE_NETDB_H
+  # include <netdb.h>
+  #endif
+  #ifdef HAVE_WINSOCK2_H
+  # include <winsock2.h>
+  #endif
+  #ifdef HAVE_WS2TCPIP_H
+  # include <ws2tcpip.h>
+  #endif"
+
+  do_winver_test="no"
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getaddrinfo" >&5
+$as_echo_n "checking for getaddrinfo... " >&6; }
+if ${ac_cv_func_getaddrinfo+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$sane_netdb_includes
+int
+main ()
+{
+int testme(){ getaddrinfo; }
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_func_getaddrinfo="yes"
+else
+  ac_cv_func_getaddrinfo="no"
+      do_winver_test="yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_getaddrinfo" >&5
+$as_echo "$ac_cv_func_getaddrinfo" >&6; }
+
+    if test "$do_winver_test" = "yes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for win32 getaddrinfo if WINVER is 0x0501" >&5
+$as_echo_n "checking for win32 getaddrinfo if WINVER is 0x0501... " >&6; }
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define WINVER 0x0501
+        $sane_netdb_includes
+int
+main ()
+{
+int testme(){ getaddrinfo; }
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+      ac_cv_func_getaddrinfo="yes"
+
+$as_echo "#define NEED_WINVER_XP 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      ac_cv_func_getaddrinfo="no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  fi
+
+  if test "$ac_cv_func_getaddrinfo" = "yes"; then
+
+$as_echo "#define HAVE_GETADDRINFO 1" >>confdefs.h
+
+  fi
+
+  unset do_winver_test
+  unset sane_netdb_includes
+
+
+  sane_netdb_includes="$ac_includes_default
+  #ifdef HAVE_SYS_SOCKET_H
+  # include <sys/socket.h>
+  #endif
+  #ifdef HAVE_NETDB_H
+  # include <netdb.h>
+  #endif
+  #ifdef HAVE_WINSOCK2_H
+  # include <winsock2.h>
+  #endif
+  #ifdef HAVE_WS2TCPIP_H
+  # include <ws2tcpip.h>
+  #endif"
+
+  do_winver_test="no"
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getnameinfo" >&5
+$as_echo_n "checking for getnameinfo... " >&6; }
+if ${ac_cv_func_getnameinfo+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$sane_netdb_includes
+int
+main ()
+{
+int testme(){ getnameinfo; }
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_func_getnameinfo="yes"
+else
+  ac_cv_func_getnameinfo="no"
+      do_winver_test="yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_getnameinfo" >&5
+$as_echo "$ac_cv_func_getnameinfo" >&6; }
+
+    if test "$do_winver_test" = "yes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for win32 getnameinfo if WINVER is 0x0501" >&5
+$as_echo_n "checking for win32 getnameinfo if WINVER is 0x0501... " >&6; }
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define WINVER 0x0501
+        $sane_netdb_includes
+int
+main ()
+{
+int testme(){ getnameinfo; }
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+      ac_cv_func_getnameinfo="yes"
+
+$as_echo "#define NEED_WINVER_XP 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      ac_cv_func_getnameinfo="no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  fi
+
+  if test "$ac_cv_func_getnameinfo" = "yes"; then
+
+$as_echo "#define HAVE_GETNAMEINFO 1" >>confdefs.h
+
+  fi
+
+  unset do_winver_test
+  unset sane_netdb_includes
+
 
 ac_fn_c_check_func "$LINENO" "getenv" "ac_cv_func_getenv"
 if test "x$ac_cv_func_getenv" = xyes; then :
