@@ -10286,13 +10286,21 @@ $as_echo "no, manually disabled" >&6; }
 fi
 
 
+  ipv6_includes="
+    #define INET6
+    $ac_includes_default
+    #ifdef HAVE_SYS_SOCKET_H
+    # include <sys/socket.h>
+    #endif
+    #ifdef HAVE_WINSOCK2_H
+    # include <winsock2.h>
+    #endif"
+
   if test "$ipv6" != "no" ; then
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-	#define INET6
-	#include <sys/types.h>
-	#include <sys/socket.h>
+	$ipv6_includes
 int
 main ()
 {
@@ -10332,9 +10340,7 @@ $as_echo_n "checking whether struct sockaddr_storage has an ss_family member... 
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-	#define INET6
-	#include <sys/types.h>
-	#include <sys/socket.h>
+	$ipv6_includes
 int
 main ()
 {
@@ -10361,9 +10367,7 @@ else
 		cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-		#define INET6
-		#include <sys/types.h>
-		#include <sys/socket.h>
+		$ipv6_includes
 int
 main ()
 {

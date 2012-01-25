@@ -556,11 +556,19 @@ AC_DEFUN([SANE_CHECK_IPV6],
          fi
       ])
 
+  ipv6_includes="
+    #define INET6
+    $ac_includes_default
+    #ifdef HAVE_SYS_SOCKET_H
+    # include <sys/socket.h>
+    #endif
+    #ifdef HAVE_WINSOCK2_H
+    # include <winsock2.h>
+    #endif"
+
   if test "$ipv6" != "no" ; then
     AC_TRY_COMPILE([
-	#define INET6 
-	#include <sys/types.h> 
-	#include <sys/socket.h> ], [
+	$ipv6_includes], [
 	 /* AF_INET6 available check */  
  	if (socket(AF_INET6, SOCK_STREAM, 0) < 0) 
    	  exit(1); 
@@ -579,9 +587,7 @@ AC_DEFUN([SANE_CHECK_IPV6],
   if test "$ipv6" != "no" ; then
     AC_MSG_CHECKING([whether struct sockaddr_storage has an ss_family member])
     AC_TRY_COMPILE([
-	#define INET6
-	#include <sys/types.h>
-	#include <sys/socket.h> ], [
+	$ipv6_includes], [
 	/* test if the ss_family member exists in struct sockaddr_storage */
 	struct sockaddr_storage ss;
 	ss.ss_family = AF_INET;
@@ -591,9 +597,7 @@ AC_DEFUN([SANE_CHECK_IPV6],
 	AC_DEFINE([HAS_SS_FAMILY], 1, [Define to 1 if struct sockaddr_storage has an ss_family member])
     ], [
 		AC_TRY_COMPILE([
-		#define INET6
-		#include <sys/types.h>
-		#include <sys/socket.h> ], [
+		$ipv6_includes], [
 		/* test if the __ss_family member exists in struct sockaddr_storage */
 		struct sockaddr_storage ss;
 		ss.__ss_family = AF_INET;
